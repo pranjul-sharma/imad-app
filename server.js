@@ -10,9 +10,14 @@ var config = {
     password: process.env.DB_PASSWORD
 };
 var bodyParser = require('body-parser');
+var session = require('express-session');
 var app = express();
 app.use(morgan('combined'));
 app.use(bodyParser.json());
+app.use(session({
+    secret: 'someRandomSecretString',
+    cookie: { maxAge: 1000 * 60 * 60 * 24 * 30 }
+}));
 
 function createTemplate(data) {
     var title = data.title;
@@ -119,7 +124,17 @@ app.post('/login', function(req, res) {
               var hashedPassword = hash (password , salt );
               
               if ( hashedPassword ===  dbString ) {
-                  res.send('credentials correct!');
+                
+                //set session here
+                req.session.auth = { userId: result.rows[0].id};
+                
+                //set cookie with a session id
+                //internally, on the server side, it maps the session id to an object
+                // {auth: {userId}}
+                
+                
+                res.send('credentials correct!');
+                   
               } else {
                   res.status(403).send("username/password invalid!");
               }
@@ -127,6 +142,14 @@ app.post('/login', function(req, res) {
       }
        
    });    
+});
+
+app.get('/check-login', function(req, res) {
+    if (req.session && req.session.auth && req.session.auth.userId ) {
+        res.send('You are already logged in: ' + req.session.auth.userId.toString());
+    } else {
+        res.send('You are not logged in!');
+    }
 });
 
 app.get('/hash/:input', function(req, res) {
