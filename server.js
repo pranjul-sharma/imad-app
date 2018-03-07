@@ -9,9 +9,10 @@ var config = {
     host: 'db.imad.hasura-app.io',
     password: process.env.DB_PASSWORD
 };
-
+var bodyParser = require('body-parser');
 var app = express();
 app.use(morgan('combined'));
+app.use(bodyParser.json());
 
 function createTemplate(data) {
     var title = data.title;
@@ -82,6 +83,24 @@ function hash(input, salt) {
     var hashedValue = crypto.pbkdf2Sync(input,salt, 10000, 512, 'sha512');
     return ['pbkdf2',10000,salt,hashedValue.toString('hex')].join('$');
 }
+
+app.post('/create-user', function( req, res ){
+   //username, password
+   
+   var username = req.body.username;
+   var password = req.body.password;
+   
+   var salt = crypto.randomBytes(128).toString('hex');
+   var dbString = hash(password,salt);
+   pool.query('INSERT INTO "user" (username, password) VALUES ($1,$2)', [username, dbString], function(err, result){
+      if (err){
+          res.status(500).send(err.toString());
+      } else {
+          res.send("user created successfully: "+username);
+      }
+       
+   });
+});
 
 app.get('/hash/:input', function(req, res) {
    var hashStr = hash(req.params.input, 'this-is-some-random-string');
