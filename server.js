@@ -12,38 +12,6 @@ var config = {
 var app = express();
 app.use(morgan('combined'));
 
-var articles = {
-   'article-one': {
-    title: 'Article One | Pranjul Sharma',
-    heading: 'Article One',
-    date: 'Feb 16, 2018',
-    content: `<p>
-                Hello this is first article page created using hasura imad console by Pranjul Sharma.
-            </p>
-            <p>
-                Hello this is first article page created using hasura imad console by Pranjul Sharma.
-            </p>
-            <p>
-                Hello this is first article page created using hasura imad console by Pranjul Sharma.
-            </p>`
-},
-   'article-two': {
-    title: 'Article Two | Pranjul Sharma',
-    heading: 'Article Two',
-    date: 'Feb 26, 2018',
-    content: `<p>
-                Hello this is second article page created using hasura imad console by Pranjul Sharma.
-            </p>`
-    },
-   'article-three': {
-       title: 'Article Three | Pranjul Sharma',
-    heading: 'Article One',
-    date: 'Feb 16, 2018',
-    content: `<p>
-                Hello this is third article page created using hasura imad console by Pranjul Sharma.
-            </p>`
-   }
-};
 function createTemplate(data) {
     var title = data.title;
     var date = data.date;
