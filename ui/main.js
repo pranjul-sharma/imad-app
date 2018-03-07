@@ -1,48 +1,40 @@
 console.log('Loaded!');
 
-//Counter code
-var button = document.getElementById('counter');
-var counter = 0;
 
-button.onclick = function(){
-    
-    //Create a request.
-    var request = new XMLHttpRequest();
-    
-    //capture the response and store it in a variable.
-    request.onreadystatechange = function(){
-      
-      if ( request.readyState === XMLHttpRequest.DONE ) {
-          if ( request.status == 200 ) {
-              var counter = request.responseText ;
-              var span = document.getElementById('count');
-              span.innerHTML = counter.toString();
-          }
-      }  
-    };
-    
-    //make a request.
-    request.open('GET','http://sharmapranjul1998.imad.hasura-app.io/counter',true);
-    request.send(null);
-};
 
 
 //Submit code
-var nameInput = document.getElementById('name');
-var name = nameInput.value;
-
 var submit = document.getElementById('submit_btn');
 
 submit.onclick = function(){
-    //make a request to the server and send a name
-    //capture a list of name and render it as a list
     
-    var names = ['name1', 'name2', 'name3','name4'];
-    var list = '';
-    for ( var i = 0; i< names.length; i++ ) {
-        list += '<li>' + names[i] + '</li>';
-    }
+    //create a request object
+    var request = new XMLHttpRequest();
     
-    var ul = document.getElementById('name_list');
-    ul.innerHTML = list;
+    //capture the response and store it in a variable
+    request.onreadystatechange = function(){
+        
+        if (request.readState === XMLHttpRequest.DONE ) {
+            
+            //Take some action
+            if (request.status === 200 ){
+                alert("Login successful!");
+            } else if ( request.status === 403 ) {
+                alert("username/password is incorrect!");
+            } else if ( request.status === 500 ) {
+                alert("something went wrong at server!");
+            }
+        }
+        //Not done yet
+    };
+    
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+    console.log(username);
+    console.log(password);
+    
+    request.open('POST', 'http://sharmapranjul1998.imad.hasura-app.io/login', true);
+    request.setRequestHeader('Content-Type','application/json');
+    request.send(JSON.stringify({username:username, password:password }));
+    
 };
