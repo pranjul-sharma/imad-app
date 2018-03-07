@@ -77,6 +77,16 @@ app.get('/test-db', function (req, res){
 });
 
 
+function hash(input, salt) {
+    var hasedValue = crypto.pbkdf2Sync(input,salt, 10000, 512, 'sha512');
+    return hashedValue.toString('hex');
+}
+app.get('/hash/:input', function(req, res) {
+   var hashedStr = hash(req.params.input, 'this-is-random-string');
+   res.send(hashStr);
+});
+
+
 app.get('/articles/:articleName', function (req, res) {
     //var articleName = req.params.articleName;
     
